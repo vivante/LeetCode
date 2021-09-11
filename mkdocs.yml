@@ -1,0 +1,99 @@
+# Project information
+site_name: LeetCode Solutions
+site_description: LeetCode Solutions in C++, Java, and Python.
+site_author: P.-Y. Chen
+site_url: https://walkccc.me/LeetCode
+
+# Repository
+repo_name: walkccc/LeetCode
+repo_url: https://github.com/walkccc/LeetCode
+edit_uri: ''
+
+# Copyright
+copyright: Copyright &copy; <a href="http://github.com/walkccc">P.-Y. Chen</a> 2019 - 2022
+
+# Configuration
+theme:
+  name: material
+  custom_dir: overrides
+  language: en
+  favicon: assets/favicon.png
+  font:
+    text: Roboto
+    code: Roboto Mono
+  icon:
+    logo: fontawesome/solid/code
+    repo: fontawesome/brands/github
+  features:
+    - navigation.expand
+    - navigation.top
+    - search.highlight
+    - search.suggest
+  palette:
+    # Light mode
+    - media: '(prefers-color-scheme: light)'
+      scheme: default
+      primary: white
+      accent: light blue
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    # Dark mode
+    - media: '(prefers-color-scheme: dark)'
+      scheme: slate
+      primary: cyan
+      accent: amber
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+
+# Customization
+extra:
+  social:
+    - icon: fontawesome/brands/github-square
+      link: https://github.com/walkccc
+    - icon: fontawesome/brands/linkedin
+      link: https://www.linkedin.com/in/walkccc
+    - icon: material/book-open-page-variant
+      link: https://walkccc.me/CLRS
+  analytics:
+    provider: google
+    property: UA-117404761-3
+
+extra_css:
+  - css/katex.css
+  - css/custom.css
+  - https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.css
+
+extra_javascript:
+  - js/katex.js
+  - https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.js
+  - https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/contrib/auto-render.min.js
+
+# Extensions
+markdown_extensions:
+  - toc:
+      permalink: false
+  - pymdownx.highlight:
+      linenums: true
+      linenums_style: pymdownx.table
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:pymdownx.emoji.twemoji
+      emoji_generator: !!python/name:pymdownx.emoji.to_svg
+  - pymdownx.superfences
+  - pymdownx.mark
+  - pymdownx.tabbed:
+      alternate_style: true
+
+# Plugins
+plugins:
+  - search:
+      lang:
+        - en
+
+nav:
+  - Home: index.md
+  - Preface: preface.md
+  - Style Guide: styleguide.md
