@@ -134,7 +134,9 @@ class LeetCodeAPI:
         f.write("\n\n")
 
   def write_problems(self) -> None:
-    for i, problem in enumerate(self.problems):
+    for problem in self.problems:
+      frontend_question_id: int = problem["stat"]["frontend_question_id"]
+      i: int = frontend_question_id - 1
       filled_num: str = str(i + 1).zfill(4)
 
       slug: str = problem["stat"]["question__title_slug"]
@@ -147,7 +149,7 @@ class LeetCodeAPI:
       problem_tags: List[str] = []
       for tag in question["topicTags"]:
         problem_tags.append(tag["name"])
-      link: str = f'https://leetcode.com/problems/{self.problems[i]["stat"]["question__title_slug"]}'
+      link: str = f'https://leetcode.com/problems/{problem["stat"]["question__title_slug"]}'
       emoji: str = self.__get_emoji(likes=likes, dislikes=dislikes)
       time_complexities: List[str] = self.records[i]["Time"].split("; ")
       space_complexities: List[str] = self.records[i]["Space"].split("; ")
@@ -198,10 +200,11 @@ class LeetCodeAPI:
     """Append nav titles to mkdocs.yml"""
     with open("mkdocs/mkdocs.yml", "a+") as f:
       f.write("  - Problems:\n")
-      for i, problem in enumerate(self.problems):
-        num: int = i + 1
+      for problem in self.problems:
+        frontend_question_id: int = problem["stat"]["frontend_question_id"]
         title: str = problem["stat"]["question__title"]
-        f.write(f'      - "{num}. {title}": problems/{str(num).zfill(4)}.md\n')
+        f.write(
+            f'      - "{frontend_question_id}. {title}": problems/{str(frontend_question_id).zfill(4)}.md\n')
 
   def write_readme(self) -> None:
     """Update README.md by folder files"""
@@ -211,8 +214,9 @@ class LeetCodeAPI:
     ac_medium: int = 0
     ac_hard: int = 0
 
-    for i, problem in enumerate(self.problems):
-      filled_num: int = str(i + 1).zfill(4)
+    for problem in self.problems:
+      frontend_question_id: int = problem["stat"]["frontend_question_id"]
+      filled_num: int = str(frontend_question_id).zfill(4)
       matches = glob.glob(f"{self.sols_path}{filled_num}*")
       if not matches:
         continue
