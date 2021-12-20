@@ -1,5 +1,6 @@
 import glob
 import json
+import logging
 import os
 from io import TextIOWrapper
 from typing import Dict, List
@@ -141,6 +142,15 @@ class LeetCodeAPI:
 
       slug: str = problem["stat"]["question__title_slug"]
       question = self.__get_problem_by_slug(slug)
+      if question == None:
+        logging.warn("question is None")
+        logging.warn(f"{frontend_question_id = }")
+        logging.warn(f"{slug = }")
+
+      # Temporary solve LeetCode API inconsistency
+      if slug == "bulb-switcher-iv":
+        slug = "minimum-suffix-flips"
+        question = self.__get_problem_by_slug(slug)
 
       title: str = question["title"]
       difficulty: str = question["difficulty"]
