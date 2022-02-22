@@ -8,7 +8,7 @@ git clone -b scripts --single-branch https://github.com/walkccc/LeetCode.git scr
 python3 scripts/main.py --mock
 
 cp README.md mkdocs/docs/preface.md
-cp NAMING.md mkdocs/docs/naming.md
+cp STYLEGUIDE.md mkdocs/docs/styleguide.md
 
 cd mkdocs
 mkdocs serve
