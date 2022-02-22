@@ -1,3 +1,4 @@
+import collections
 import glob
 import json
 import logging
@@ -14,7 +15,7 @@ from gsheet import sheet
 
 USER_AGENT = os.getenv("USER_AGENT")
 LEETCODE_SESSION = os.getenv("LEETCODE_SESSION")
-BADGE_PREFIX = '  <img src="https://img.shields.io/badge/-'
+BADGE_PREFIX = '<img src="https://img.shields.io/badge/'
 BADGE_SUFFIX = '.svg?style=flat-square" />\n'
 
 
@@ -218,43 +219,41 @@ class LeetCodeAPI:
 
   def write_readme(self) -> None:
     """Update README.md by folder files"""
-    num_solved: int = 0
     num_total: int = self.res["num_total"]
-    ac_easy: int = 0
-    ac_medium: int = 0
-    ac_hard: int = 0
+    prob_count = collections.Counter()  # {int (level): int}
+    ac_count = collections.Counter()  # {int (level): int}
 
     for problem in self.problems:
+      # 1 := easy, 2 := medium, 3 := hard
+      level: int = problem["difficulty"]["level"]
+      prob_count[level] += 1
       frontend_question_id: int = problem["stat"]["frontend_question_id"]
       filled_num: int = str(frontend_question_id).zfill(4)
-      matches = glob.glob(f"{self.sols_path}{filled_num}*")
-      if not matches:
-        continue
+      match = glob.glob(f"{self.sols_path}{filled_num}*")
+      if match:
+        ac_count[level] += 1
 
-      num_solved += 1
+    num_solved = sum(ac_count.values())
 
-      level: int = problem["difficulty"]["level"]
-      if level == 1:
-        ac_easy += 1
-      elif level == 2:
-        ac_medium += 1
-      else:
-        ac_hard += 1
+    solved_percentage: float = round((num_solved / num_total) * 100, 2)
+    solved_badge: str = f"{BADGE_PREFIX}Solved-{num_solved}/{num_total}%20=%20{solved_percentage}%25-blue{BADGE_SUFFIX}"
+    easy_badge: str = f"{BADGE_PREFIX}Easy-{ac_count[1]}/{prob_count[1]}-5CB85D{BADGE_SUFFIX}"
+    medium_badge: str = f"{BADGE_PREFIX}Medium-{ac_count[2]}/{prob_count[2]}-F0AE4E{BADGE_SUFFIX}"
+    hard_badge: str = f"{BADGE_PREFIX}Hard-{ac_count[3]}/{prob_count[3]}-D95450{BADGE_SUFFIX}"
 
     # Write to README
     with open("README.md", "r") as f:
       original_readme = f.readlines()
 
-    solved_percentage: float = round((num_solved / num_total) * 100, 2)
-    solved_badge: str = f"{BADGE_PREFIX}{num_solved}/{num_total}%20=%20{solved_percentage}%25%20Solved-blue{BADGE_SUFFIX}"
-    easy_badge: str = f"{BADGE_PREFIX}Easy%20{ac_easy}-5CB85D{BADGE_SUFFIX}"
-    medium_badge: str = f"{BADGE_PREFIX}Medium%20{ac_medium}-F0AE4E{BADGE_SUFFIX}"
-    hard_badge: str = f"{BADGE_PREFIX}Hard%20{ac_hard}-D95450{BADGE_SUFFIX}"
+    # Find the line with solved badge and replace the following 4 lines
+    for i, line in enumerate(original_readme):
+      if line.startswith('<img src="https://img.shields.io/badge/Solved'):
+        break
 
-    original_readme[5] = solved_badge
-    original_readme[6] = easy_badge
-    original_readme[7] = medium_badge
-    original_readme[8] = hard_badge
+    original_readme[i] = solved_badge
+    original_readme[i + 2] = easy_badge
+    original_readme[i + 3] = medium_badge
+    original_readme[i + 4] = hard_badge
 
     with open("README.md", "w+") as f:
       for line in original_readme:
